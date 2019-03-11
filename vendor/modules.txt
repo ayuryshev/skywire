@@ -27,7 +27,7 @@ github.com/mgutz/ansi
 github.com/mitchellh/go-homedir
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
-# github.com/sirupsen/logrus v1.3.0
+# github.com/sirupsen/logrus v1.4.0
 github.com/sirupsen/logrus
 # github.com/skycoin/skycoin v0.25.1
 github.com/skycoin/skycoin/src/util/logging
@@ -54,11 +54,11 @@ golang.org/x/crypto/curve25519
 golang.org/x/crypto/internal/chacha20
 golang.org/x/crypto/internal/subtle
 golang.org/x/crypto/poly1305
-# golang.org/x/net v0.0.0-20190310074541-c10a0554eabf
+# golang.org/x/net v0.0.0-20190311175648-12eef18f757f
 golang.org/x/net/context
 golang.org/x/net/proxy
 golang.org/x/net/internal/socks
-# golang.org/x/sys v0.0.0-20190310054646-10058d7d4faa
+# golang.org/x/sys v0.0.0-20190311152110-c8c8c57fd1e1
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/cpu
