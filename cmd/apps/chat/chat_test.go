@@ -19,12 +19,15 @@ Set SKYWIRE_NODE_PK to static_public_key of SKYWIRE_NODE
 
 E.g.
 ```bash
-export SKYWIRE_INTEGRATION_TESTS=1
-export SKYWIRE_HOST=http://localhost:8000
-export SKYWIRE_NODE=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' SKY01)
-export SKYWIRE_NODE_PK=$(<./node/PK)
-export SKYWIRE_HOST_PK=$(<./PK)
+export SW_INTEGRATION_TESTS=1
+export SW_NODE_A=127.0.0.1
+export SW_NODE_A_PK=$(cat ./skywire.json|grep static_public_key |cut -d ':' -f2 |tr -d '"'','' ')
+export SW_NODE_B=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' SKY01)
+export SW_NODE_B_PK=$(cat ./node/skywire.json|grep static_public_key |cut -d ':' -f2 |tr -d '"'','' ')%
 ```
+
+Preparation
+
 */
 
 // Test suite for testing chat between 2 nodes
@@ -38,17 +41,17 @@ type TwoNodesSuite struct {
 }
 
 func (suite *TwoNodesSuite) SetupTest() {
-	envEnabled := os.Getenv("SKYWIRE_INTEGRATION_TESTS")
+	envEnabled := os.Getenv("SW_INTEGRATION_TESTS")
 	suite.Disabled = (envEnabled != "1")
-	suite.Host = os.Getenv("SKYWIRE_HOST")
-	suite.HostPK = os.Getenv("SKYWIRE_HOST_PK")
-	suite.Node = os.Getenv("SKYWIRE_NODE")
-	suite.NodePK = os.Getenv("SKYWIRE_NODE_PK")
+	suite.Host = os.Getenv("SW_NODE_A")
+	suite.HostPK = os.Getenv("SW_NODE_A_PK")
+	suite.Node = os.Getenv("SW_NODE_B")
+	suite.NodePK = os.Getenv("SW_NODE_B_PK")
 
 	suite.T().Logf(`
-	SKYWIRE_INTEGRATION_TESTS=%v 
-	SKYWIRE_HOST=%v SKYWIRE_HOST_PK=%v 
-	SKYWIRE_NODE=%v SKYWIRE_NODE_PK=%v`,
+	SW_INTEGRATION_TESTS=%v 
+	SW_NODE_A=%v SW_NODE_A_PK=%v 
+	SW_NODE_B=%v SW_NODE_B_PK=%v`,
 		envEnabled, suite.Host, suite.HostPK, suite.Node, suite.NodePK)
 }
 
@@ -77,17 +80,17 @@ func (suite *TwoNodesSuite) MessageToHost(message string) (*http.Response, error
 	return sendmessage(suite.Node, suite.HostPK, message)
 }
 
-// func (suite *TwoNodesSuite) TestMessageToHost(message string) {
-// 	t := suite.T()
-// 	if suite.Enabled() {
-// 		resp, err := suite.MessageToHost("Disabled")
-// 		require.Nil(t, err, "Got an error in MessageToHost")
-// 		t.Logf("%v", resp)
-// 	}
-// }
-
-func (suite *TwoNodesSuite) TstMessageToNode(message string) {
+func (suite *TwoNodesSuite) TestMessageToHost(message string) {
 	t := suite.T()
+	if suite.Enabled() {
+		resp, err := suite.MessageToHost("Disabled")
+		// require.Nil(t, err, "Got an error in MessageToHost")
+		t.Logf("%v %v", resp, err)
+	}
+}
+
+func (suite *TwoNodesSuite) TestMessageToNode(message string) {
+	tx := suite.T()
 	if suite.Enabled() {
 		resp, err := suite.MessageToHost("B")
 		// require.NoError(t, err, "Got an error in MessageToNode")
