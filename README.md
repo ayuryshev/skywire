@@ -360,7 +360,7 @@ export SW_NODE_B_PK=$(cat ./node/skywire.json|grep static_public_key |cut -d ':'
 
 #### 6. "Hello-Mike-Hello-Joe" test
 
-Idea of test from Erlang classics: https://youtu.be/uKfKtXYLG78?t=120
+Erlang classics: "Hello Mike!-Hello Joe!-System's working!"
 
 ```bash
 # Setup: run skywire-nodes on host and in docker
