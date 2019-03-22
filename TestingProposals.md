@@ -1,7 +1,5 @@
 # Testing Proposals
 
--------------------------------------------------------------------
-
 ## 1.  Tests in  development environment and automated tests
 
 ### Description
@@ -95,6 +93,8 @@ fuzz-encoder: ## Fuzz the encoder package. Requires https://github.com/dvyukov/g
 
 .. need to dive in more how and why they do `go-fuzz` ..
 
+### Tools
+
 ### Possible proposals
 
 **For testing environments**:
@@ -138,21 +138,51 @@ test: ## Run tests for net
         ${OPTS} go test -race -tags no_ci -cover -timeout=5m ./pkg/...
 ```
 
+### Tools
+
 ### Proposals
 
 -------------------------------------------------------------------
 
 ## 4. Load testing, Benchmarks
 
+### Description
+
+.. write short descriptions ..
+
+### Current status in skywire
+
+.. need to dive more, from what I see: we don't have them yet ..
+
+### Tools
+
+### Proposals
+
 -------------------------------------------------------------------
 
-## 5. Travis-CI
+## 5. Travis CI-tests
 
 ### Description
 
+Travis-CI tests are runned for each PR.
+
+CI-tests must have duration not exceeding some value.
+
+From discussion we came to: "Not more than 30 minutes"
+
 ### Current status
 
+We have Travis-CI tests runned by `make test`
+
+Durations are between 2-3 minutes
+
+We don't use Travis to run dockerized tests
+
+### Tools
+
 ### Proposals
+
+... need to dive more into other skycoin projects ...
 
 -------------------------------------------------------------------
 
@@ -192,7 +222,7 @@ As far as I remember they are especially good for:
 ### Current status in skycoin/skywire
 
 We don't have them.
-And maybe it's prematurely to start them.
+And maybe it's prematurely to start create them.
 But they could/must be useful for skywire in future.
 
 ### Current status in skycoin/skycoin
@@ -209,6 +239,8 @@ fuzz-encoder: ## Fuzz the encoder package. Requires https://github.com/dvyukov/g
 
 .. need to analyze more ..
 
+### Tools
+
 ### Proposals
 
 I'm not sure that today go-fuzz will be beneficial for us.
@@ -221,8 +253,23 @@ And when everything will start to work - start fuzzy tests
 
 ### Description
 
-### Current status*
+Non-CI tests could be:
 
-We don't have them
+- they are too long - and breaks development workflow
+- they use too much resources to create test environment  
+- they are impossible to run from CI by another reason
+
+... must check what travis-ci could do ...
+
+### Current status in skywire
+
+We don't have them yet
+But the need should/must arise in future
+
+### Current status in other skycoin projects
+
+.. need to dive more ..
+
+### Tools
 
 ### Proposals
