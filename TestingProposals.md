@@ -1,5 +1,62 @@
 # Testing Proposals
 
+- [Testing Proposals](#testing-proposals)
+	- [Foreword](#foreword)
+	- [1. Tests in development environment and automated tests](#1-tests-in-development-environment-and-automated-tests)
+		- [Description](#description)
+		- [Current status in skywire](#current-status-in-skywire)
+		- [Current status in other skycoin projects (only about skycoin/skycoin now)](#current-status-in-other-skycoin-projects-only-about-skycoinskycoin-now)
+		- [Tools](#tools)
+		- [Possible proposals](#possible-proposals)
+	- [2. "Blackbox"-"Whitebox"-other "boxes". Integration tests, load tests, etc](#2-%22blackbox%22-%22whitebox%22-other-%22boxes%22-integration-tests-load-tests-etc)
+		- [Descriptions](#descriptions)
+		- [Current status](#current-status)
+		- [Tools](#tools-1)
+		- [Proposals](#proposals)
+	- [4. Load testing, Benchmarks](#4-load-testing-benchmarks)
+		- [Description](#description-1)
+		- [Current status in skywire](#current-status-in-skywire-1)
+		- [Tools](#tools-2)
+		- [Proposals](#proposals-1)
+	- [5. Travis CI-tests](#5-travis-ci-tests)
+		- [Description](#description-2)
+		- [Current status](#current-status-1)
+		- [Tools](#tools-3)
+		- [Proposals](#proposals-2)
+	- [6. Fuzzy-testing. go-fuzz](#6-fuzzy-testing-go-fuzz)
+	- [Description](#description-3)
+		- [Current status in skycoin/skywire](#current-status-in-skycoinskywire)
+		- [Current status in skycoin/skycoin](#current-status-in-skycoinskycoin)
+		- [Tools](#tools-4)
+		- [Proposals](#proposals-3)
+	- [7. Non-CI tests](#7-non-ci-tests)
+		- [Description](#description-4)
+		- [Current status in skywire](#current-status-in-skywire-2)
+		- [Current status in other skycoin projects](#current-status-in-other-skycoin-projects)
+		- [Tools](#tools-5)
+		- [Proposals](#proposals-4)
+	- [Roadmap](#roadmap)
+
+## Foreword
+
+This document is not an attempt to write a monography on software testing.
+
+It's a living document summarizing themes brought up in discussions.
+
+**Goals** are to describe:
+
+- the current status of our testing: What tests we are running, how they are running, where they are running
+- long term proposals for the testing: What tests, how and where.
+- create a small „roadmap“: What is most urgent? What can be done later?
+
+**Non-goals**:
+
+- absolute correctness
+- absolute logical consistency
+- full coverage of the theme of software testing
+
+-------------------------------------------------------------
+
 ## 1.  Tests in  development environment and automated tests
 
 ### Description
@@ -32,12 +89,13 @@ test: ## Run tests for net
         ${OPTS} go test -race -tags no_ci -cover -timeout=5m ./pkg/...
 ```
 
+We have coverage ranging from ~40% to ~90% for v
+
 **B. Developer-environment**
 
 - `make test` from Makefile 
 - We started some recipes for developers in README.md
 - Created `make-goals` for running nodes: `make run`, `make stop`, `make docker-run`, `make docker-stop`
-
 
 ### Current status in other skycoin projects (only about skycoin/skycoin now)
 
@@ -57,6 +115,7 @@ Added daemonization even in skycoin/scycoin itself
 
 **B. A lot of "integration"-goals**
 
+
 ```sh
 integration-test-stable        Run stable integration tests
 integration-test-stable-disable-header-check Run stable integration tests with header check disabled
@@ -73,11 +132,13 @@ integration-test-db-no-unconfirmed Run stable tests against the stable database 
 integration-test-auth          Run stable tests with HTTP Basic auth enabled
 ```
 
-Those goals are implemented (mostly from what I saw) as bash-scripts in `./ci_scripts` folder
+Live-integration-tests are described in [README.md#live-integration-tests](https://github.com/skycoin/skycoin/blob/develop/README.md#live-integration-tests).
+
+Those goals are implemented (mostly from what I saw) as bash-scripts in `./ci_scripts` folder (..need to check later..)
 
 For dockerized environments there are `./docker` folder (we have now just one `skywire-runner.Dockerfile` )
 
-.. it's needed to dive in more in their tests ...
+.. it's needed to dive in more in skycoin/skycoin tests ...
 
 **C. Fuzzy testing**
 
@@ -98,12 +159,14 @@ fuzz-encoder: ## Fuzz the encoder package. Requires https://github.com/dvyukov/g
 ### Possible proposals
 
 **For testing environments**:
+
 - ci_scripts for integration tests
 - more blackbox-tests, we have only whitebox right now
 - fuzzy tests
 - .. need more ...
 
 **For developer environment specifically**:
+
 - more recipes later, maybe including OS-specific/IDE-specific recipes
 - `detached`/`daemonized` modes for running nodes
 - more commands in `skywire-cli` such as `pk` proposed by Evan
@@ -111,32 +174,43 @@ fuzz-encoder: ## Fuzz the encoder package. Requires https://github.com/dvyukov/g
 
 -------------------------------------------------------------------
 
-## 2. "Blackbox"-"Whitebox"-other "boxes". Integration tests, load tests, etc.
+## 2. "Blackbox"-"Whitebox"-other "boxes". Integration tests, load tests, etc
 
 ### Descriptions
 
-Whitebox: everything is known about internals
-Blackbox: nothing is known about internals
+**Whitebox**: everything is known about internals
 
-Integration tests: .. describe later ..
+**Blackbox**: nothing is known about internals
 
-Load tests: .. describe later ..
-Benchmarks: .. later ..
+**Integration tests**: ["The point of integration testing, as the name suggests, is to test whether many separately developed modules work together as expected" M. Fowler](https://martinfowler.com/bliki/IntegrationTest.html)
 
-Other boxes:
-`Quikcheck`-style tests: ... write more ...
-"Fuzzy tests": it does not know about internals but it analyzes outputs to find breaking inputs. It's a kind of Quikcheck
+**Load tests**: .. describe later ..
+
+**Benchmarks**: .. later ..
+
+**Quikcheck**-style tests: [generating test cases for test suites](https://en.wikipedia.org/wiki/QuickCheck)
+
+**Fuzzy tests**: (https://en.wikipedia.org/wiki/Fuzzing)  it does not know about internals but it analyzes outputs to find breaking inputs. It's a kind of Quikcheck
 
 Styles:
+
 doctest/Example style ..
 
 ### Current status
 
-```text
-test: ## Run tests for net
-        ${OPTS} go test -race -tags no_ci -cover -timeout=5m ./internal/...
-        ${OPTS} go test -race -tags no_ci -cover -timeout=5m ./pkg/...
+```bash
+$ find pkg -name "*test.go" |wc -l
+# 34
+$ find internal -name "*test.go" |wc -l
+# 12
+$ find cmd -name "*test.go" |wc -l
+# 0
 ```
+
+Our tests are:
+
+- whitebox
+- only one Example is found  
 
 ### Tools
 
@@ -273,3 +347,9 @@ But the need should/must arise in future
 ### Tools
 
 ### Proposals
+
+------------------------------------------------------------------
+
+## Roadmap
+
+TBD
