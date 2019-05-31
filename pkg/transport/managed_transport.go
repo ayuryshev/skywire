@@ -87,12 +87,19 @@ func (tr *ManagedTransport) Write(p []byte) (n int, err error) {
 	return
 }
 
+func (tr *ManagedTransport) IsClosing() bool {
+	tr.mu.RLock()
+	b := tr.isClosing
+	tr.mu.RUnlock()
+	return b
+}
+
 // Close closes underlying
 func (tr *ManagedTransport) Close() error {
-	tr.mu.RLock()
+	tr.mu.Lock()
 	err := tr.Transport.Close()
 	tr.isClosing = true
-	tr.mu.RUnlock()
+	tr.mu.Lock()
 
 	select {
 	case <-tr.doneChan:
