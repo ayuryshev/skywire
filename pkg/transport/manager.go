@@ -387,10 +387,7 @@ func (tm *Manager) manageTransport(ctx context.Context, managedTr *ManagedTransp
 		tm.Logger.Infof("Transport %s closed", managedTr.ID)
 		return
 	case err := <-managedTr.errChan:
-		managedTr.mu.Lock()
-		isClosing := managedTr.isClosing
-		managedTr.mu.Unlock()
-		if !isClosing {
+		if !managedTr.IsClosing() {
 			tm.Logger.Infof("Transport %s failed with error: %s. Re-dialing...", managedTr.ID, err)
 			if accepted {
 				if err := tm.DeleteTransport(managedTr.ID); err != nil {
